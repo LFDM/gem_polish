@@ -29,14 +29,25 @@ Unless `--no_default` is set, `polish_gem` will look into your home
 directory for a `.gem_polish.yml` file, that can provide default values
 for gem polishing. Check the `examples` folder for its formatting.
 
+Here's an example of the syntax:
+```
+# inside a new gem called test
+polish_gem -nc -d 'a test gem' -t 1.9.3 jruby-1.7.8 -b travis
+coveralls
+```
+This would polish the test gem with coveralls support,
+circumventing the `.gem_polish.yml` file, adding the description,
+using two ruby versions for travis and adding two badges to the
+README file. 
+
+
 * create_gem
 
 Combines gem creation and polishing:
 ``` 
 create_gem my_new_gem
 ```
-This will create the new gem `my_new_gem`. Arguments can be passed to
-override defaults or provide a description.
+This will create the new gem `my_new_gem`. Arguments of `polish_gem` can be passed to override defaults or provide a description.
 ```
 create_gem my_new_gem -d 'Does nothing so far'
 ```
