@@ -12,7 +12,7 @@ module GemPolish
     method_option :coverage, aliases: '-c'
     method_option :rspec_conf, aliases: '-r'
     method_option :travis, type: :array, aliases: '-t'
-    method_option :no_default
+    method_option :no_default, aliases: '-n'
     def polish(name = '.')
       inside name do
         default = options.has_key?('no_default') ? {} : def_conf
