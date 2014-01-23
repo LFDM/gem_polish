@@ -1,5 +1,2 @@
 require "gem_polish/version"
-
-module GemPolish
-  # Your code goes here...
-end
+require "gem_polish/cli"
