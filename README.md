@@ -32,8 +32,7 @@ for gem polishing. Check the `examples` folder for its formatting.
 Here's an example of the syntax:
 ```
 # inside a new gem called test
-polish_gem -nc -d 'a test gem' -t 1.9.3 jruby-1.7.8 -b travis
-coveralls
+polish_gem -nc -d 'a test gem' -t 1.9.3 jruby-1.7.8 -b travis coveralls
 ```
 This would polish the test gem with coveralls support,
 circumventing the `.gem_polish.yml` file, adding the description,
