@@ -18,10 +18,12 @@ Available options:
 | Option | Alias | Result |
 | ------ | ----- | ------ |
 | --description | -d | Takes a string and writes it to the gemspec and the README |
-| --rspec_configuration | -r | Adds additional rspec configuration, check `lib/templates` |
+| --rspec_conf | -r | Adds additional rspec configuration, check `lib/templates` |
 | --travis | -t | Takes several ruby versions travis will use |
 | --coverage | -c | Adds coveralls to your gem |
-| --badges | -b | Adds badges to your README, supports badge fury, gemnasium, travis, coveralls and code climate |
+| --badges | -b | Adds badges to your README, supporting badge fury, gemnasium, travis, coveralls and code climate |
+| --git_user_name | -g | Overrides the git user name used to link to
+your badges. Defaults to the information inside of your `.gitconfig`.
 
 ## Contributing
 
