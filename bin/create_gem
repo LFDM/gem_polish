@@ -6,5 +6,9 @@ conf_file = "#{ENV['HOME']}/.gem_polish.yml"
 conf = File.exists?(conf_file) ?
   YAML.load(File.read(conf_file))['bundler_options'].to_s : {}
 
-exec("bundle gem #{name} #{conf} && polish_gem #{name} #{ARGV.join(' ')}")
+b_command = "bundle gem #{name} #{conf}"
+p_command = "polish_gem #{name} #{ARGV.join(' ')}"
+g_command = "cd #{name} && git add -A"
+
+exec([b_command, p_command, g_command].join (' && '))
 
