@@ -115,7 +115,7 @@ module GemPolish
 
       TEMPLATE_DIR = File.expand_path('../templates', __FILE__)
       def read_template(name)
-        File.read("#{TEMPLATE_DIR}.template")
+        File.read("#{TEMPLATE_DIR}/#{name}.template")
       end
 
       def add_dev_dependency(gem, version = nil)
