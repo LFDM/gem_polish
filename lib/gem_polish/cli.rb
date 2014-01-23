@@ -9,11 +9,14 @@ class CLI < Thor
   desc "polish", "polishes your gem"
   method_option :badges, type: :array, lazy_default: default_badges, aliases: '-b'
   method_option :git_user_name, type: :string, aliases: '-g'
+  method_option :description, aliases: '-d'
   def polish
     git_user_name = extract_git_user(options)
     badges = options[:badges]
+    description = options[:description]
 
     insert_badges(badges, git_user_name, gem_name) if badges
+    insert_description(description) if description
   end
 
 
@@ -26,6 +29,11 @@ class CLI < Thor
     def extract_git_user(options)
      user = options[:git_user_name] || `git config user.name`.chomp
      user.empty? ? "TODO: Write your name" : user
+    end
+
+    def insert_description(description)
+      gsub_file("#{gem_name}.gemspec", /TODO:.*summary.*(?=})/, description)
+      gsub_file("README.md", /TODO:.*gem description/, description)
     end
 
     BADGE_NAMES = {
