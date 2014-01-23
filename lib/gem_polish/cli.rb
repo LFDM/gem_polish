@@ -8,32 +8,31 @@ class CLI < Thor
     end
 
   desc "polish", "polishes your gem"
-  method_option :badges, type: :array, lazy_default: default_badges, aliases: '-b'
+  method_option :badges, type: :array, aliases: '-b'
   method_option :git_user_name, type: :string, aliases: '-g'
   method_option :description, aliases: '-d'
   method_option :coverage, aliases: '-c'
   method_option :rspec_configuration, aliases: '-r'
+  method_option :travis, type: :array, aliases: '-t'
   method_option :no_default
   def polish
     default = options[:no_default] ? {} : def_conf
 
     git_user_name = extract_git_user(options)
     badges = parse_opt(:badges, options, default)
-
     description = options[:description]
+    travis_opts = parse_opt(:travis, options, default)
 
-    puts options
-    puts default
-    exit
     insert_badges(badges, git_user_name, gem_name) if badges
     insert_description(description) if description
     insert_coveralls if parse_opt(:coverage, options, default)
     insert_rspec_conf if parse_opt(:rspec_configuration, options, default)
+    insert_travis(travis_opts) if travis_opts
   end
 
   no_commands do
     def parse_opt(opt, opts, default)
-      opts[opts] || default[opt]
+      opts[opt] || default[opt]
     end
 
     def extract_git_user(options)
@@ -75,6 +74,15 @@ class CLI < Thor
       append_file(spec_helper, "\n" + read_template(:rspec_configuration))
     end
 
+    def insert_travis(opts)
+      File.write(travis, YAML.dump(travis_content(opts)))
+    end
+
+    def travis_content(opts)
+      c = { 'language' => 'ruby'}
+      c.merge((opts.is_a?(Hash) ? opts : { 'rvm' => opts }))
+    end
+
     def def_conf
       conf_file = "#{ENV['HOME']}/.gem_polish.yml"
       conf = File.exists?(conf_file) ? YAML.load(File.read(conf_file)) : {}
@@ -83,6 +91,10 @@ class CLI < Thor
 
     def gem_name
       File.basename(Dir.pwd)
+    end
+
+    def travis
+      ".travis.yml"
     end
 
     def spec_helper
