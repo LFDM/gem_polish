@@ -1,6 +1,6 @@
 # GemPolish
 
-Further polishes your bundler gem skeleton
+Further polishes your Bundler gem skeleton.
 
 ## Installation
 
@@ -9,6 +9,22 @@ Further polishes your bundler gem skeleton
 ## Usage
 
 TODO: Write usage instructions here
+
+Provides two executables to improve your Bundler gem skeleton.
+
+- polish_gem
+Is meant to be used inside a newly created gem (`bundle gem GEM_NAME`)
+Available options:
+| Option | Alias | Result |
+| ------ | ----- | ------ |
+| --description | -d | Takes a string and writes it to the gemspec and
+the README |
+| --rspec_configuration | -r | Adds additional rspec configuration,
+check `lib/templates` |
+| --travis | -t | Takes several ruby versions travis will use |
+| --coverage | -c | Adds coveralls to your gem |
+| --badges | -b | Adds badges to your README, supports badge fury,
+gemnasium, travis, coveralls and code climate |
 
 ## Contributing
 
