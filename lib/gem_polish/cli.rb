@@ -7,10 +7,10 @@ module GemPolish
 
     desc "polish", "polishes your gem"
     method_option :badges, type: :array, aliases: '-b'
-    method_option :git_user_name, type: :string, aliases: '-g'
+    method_option :git_user, type: :string, aliases: '-g'
     method_option :description, aliases: '-d'
     method_option :coverage, aliases: '-c'
-    method_option :rspec_configuration, aliases: '-r'
+    method_option :rspec_conf, aliases: '-r'
     method_option :travis, type: :array, aliases: '-t'
     method_option :no_default
     def polish(name = '.')
@@ -25,7 +25,7 @@ module GemPolish
         insert_badges(badges, git_user_name, gem_name) if badges
         insert_description(description) if description
         insert_coveralls if parse_opt(:coverage, options, default)
-        insert_rspec_conf if parse_opt(:rspec_configuration, options, default)
+        insert_rspec_conf if parse_opt(:rspec_conf, options, default)
         insert_travis(travis_opts) if travis_opts
       end
     end
@@ -36,7 +36,7 @@ module GemPolish
       end
 
       def extract_git_user(options)
-       user = options[:git_user_name] || `git config user.name`.chomp
+       user = options[:git_user] || `git config user.name`.chomp
        user.empty? ? "TODO: Write your name" : user
       end
 
