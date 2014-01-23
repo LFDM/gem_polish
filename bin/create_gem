@@ -2,9 +2,13 @@
 require 'yaml'
 
 name = ARGV.shift
-conf_file = "#{ENV['HOME']}/.gem_polish.yml"
-conf = File.exists?(conf_file) ?
-  YAML.load(File.read(conf_file))['bundler_options'].to_s : {}
+# bundler_options are currently not used, maybe later
+#conf_file = "#{ENV['HOME']}/.gem_polish.yml"
+#conf = File.exists?(conf_file) ?
+  #YAML.load(File.read(conf_file))['bundler_options'].to_s : {}
+
+# hardcoding rspec as testframework
+conf = '-t rspec'
 
 b_command = "bundle gem #{name} #{conf}"
 p_command = "polish_gem #{name} #{ARGV.join(' ')}"
