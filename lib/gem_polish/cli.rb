@@ -1,4 +1,5 @@
 require 'thor'
+require 'yaml'
 
 class CLI < Thor
   include Thor::Actions
@@ -12,22 +13,28 @@ class CLI < Thor
   method_option :description, aliases: '-d'
   method_option :coverage, aliases: '-c'
   method_option :rspec_configuration, aliases: '-r'
+  method_option :no_default
   def polish
+    default = options[:no_default] ? {} : def_conf
+
     git_user_name = extract_git_user(options)
-    badges = options[:badges]
+    badges = parse_opt(:badges, options, default)
+
     description = options[:description]
 
+    puts options
+    puts default
+    exit
     insert_badges(badges, git_user_name, gem_name) if badges
     insert_description(description) if description
-    insert_coveralls if options[:coverage]
-    insert_rspec_conf if options[:rspec_configuration]
+    insert_coveralls if parse_opt(:coverage, options, default)
+    insert_rspec_conf if parse_opt(:rspec_configuration, options, default)
   end
 
   no_commands do
-    def gem_name
-      File.basename(Dir.pwd)
+    def parse_opt(opt, opts, default)
+      opts[opts] || default[opt]
     end
-
 
     def extract_git_user(options)
      user = options[:git_user_name] || `git config user.name`.chomp
@@ -40,11 +47,11 @@ class CLI < Thor
     end
 
     BADGE_NAMES = {
-      badge_fury: 'Version',
-      gemnasium: 'Dependencies',
-      travis: 'Build Status',
-      coveralls: 'Coverage',
-      code_climate: 'Code Climate'
+      'badge_fury' => 'Version',
+      'gemnasium' => 'Dependencies',
+      'travis' => 'Build Status',
+      'coveralls' => 'Coverage',
+      'code_climate' => 'Code Climate'
     }
 
     def insert_badges(badges, user, gem)
@@ -66,6 +73,16 @@ class CLI < Thor
 
     def insert_rspec_conf
       append_file(spec_helper, "\n" + read_template(:rspec_configuration))
+    end
+
+    def def_conf
+      conf_file = "#{ENV['HOME']}/.gem_polish.yml"
+      conf = File.exists?(conf_file) ? YAML.load(File.read(conf_file)) : {}
+      conf.each_with_object({}) { |(k, v), h| h[k.to_sym] = v }
+    end
+
+    def gem_name
+      File.basename(Dir.pwd)
     end
 
     def spec_helper
