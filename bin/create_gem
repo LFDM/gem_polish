@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require 'yaml'
+
+name = ARGV.shift
+conf_file = "#{ENV['HOME']}/.gem_polish.yml"
+conf = File.exists?(conf_file) ?
+  YAML.load(File.read(conf_file))['bundler_options'].to_s : {}
+
+`bundle gem #{name} #{conf}`
+`polish_gem #{name}`
+
