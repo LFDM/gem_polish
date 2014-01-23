@@ -1,6 +1,6 @@
 # GemPolish
 
-TODO: Write a gem description
+Further polishes your bundler gem skeleton
 
 ## Installation
 

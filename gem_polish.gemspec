@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = GemPolish::VERSION
   spec.authors       = ["LFDM"]
   spec.email         = ["1986gh@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
+  spec.summary       = %q{Further polishes your bundler gem skeleton}
   spec.description   = %q{Adds code coverage tools, badges in README, more ruby versions in travis etc.}
   spec.homepage      = ""
   spec.license       = "MIT"
