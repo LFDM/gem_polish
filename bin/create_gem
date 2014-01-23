@@ -10,8 +10,12 @@ name = ARGV.shift
 # hardcoding rspec as testframework
 conf = '-t rspec'
 
+rebuilt_arguments = ARGV.map do |opt|
+  opt.start_with?('-') ? opt : %{"#{opt}"}
+end.join(' ')
+
 b_command = "bundle gem #{name} #{conf}"
-p_command = "polish_gem #{name} #{ARGV.join(' ')}"
+p_command = "polish_gem #{name} #{rebuilt_arguments}"
 g_command = "cd #{name} && git add -A"
 
 exec([b_command, p_command, g_command].join (' && '))
