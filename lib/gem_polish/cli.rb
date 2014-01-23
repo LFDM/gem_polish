@@ -14,7 +14,7 @@ module GemPolish
     method_option :travis, type: :array, aliases: '-t'
     method_option :no_default
     def polish(name = '.')
-      Dir.chdir(name) do
+      inside name do
         default = options.has_key?('no_default') ? {} : def_conf
 
         description = options[:description]
@@ -75,12 +75,18 @@ module GemPolish
       end
 
       def insert_travis(opts)
+        say_status :rewrite, relative_destination(travis)
         File.write(travis, YAML.dump(travis_content(opts)))
       end
 
       def travis_content(opts)
         c = { 'language' => 'ruby'}
         c.merge((opts.is_a?(Hash) ? opts : { 'rvm' => opts }))
+      end
+
+      def relative_destination(dest)
+        d = File.expand_path(dest, destination_root)
+        relative_to_original_destination_root(d)
       end
 
       def def_conf
@@ -113,19 +119,20 @@ module GemPolish
         "README.md"
       end
 
-      TEMPLATE_DIR = File.expand_path('../templates', __FILE__)
+      TEMPLATE_DIR = File.expand_path('../../templates', __FILE__)
       def read_template(name)
         File.read("#{TEMPLATE_DIR}/#{name}.template")
       end
 
       def add_dev_dependency(gem, version = nil)
-        gs = "#{Dir.pwd}/#{gemspec}"
-        total_size = File.size(gs)
+        total_size = File.size(gemspec)
         pos_before_end = total_size - 4
         insertion = %{  spec.add_development_dependency "#{gem}"}
+        return if File.read(gemspec).match(/#{insertion}/)
         insertion << %{, "~> #{version}"} if version
 
-        File.open(gs, 'r+') do |file|
+        say_status :append, relative_destination(gemspec)
+        File.open(gemspec, 'r+') do |file|
           file.seek(pos_before_end, IO::SEEK_SET)
           file.puts(insertion)
           file.puts('end')
