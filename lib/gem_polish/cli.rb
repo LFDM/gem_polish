@@ -11,6 +11,7 @@ class CLI < Thor
   method_option :git_user_name, type: :string, aliases: '-g'
   method_option :description, aliases: '-d'
   method_option :coverage, aliases: '-c'
+  method_option :rspec_configuration, aliases: '-r'
   def polish
     git_user_name = extract_git_user(options)
     badges = options[:badges]
@@ -19,6 +20,7 @@ class CLI < Thor
     insert_badges(badges, git_user_name, gem_name) if badges
     insert_description(description) if description
     insert_coveralls if options[:coverage]
+    insert_rspec_conf if options[:rspec_configuration]
   end
 
   no_commands do
@@ -60,6 +62,10 @@ class CLI < Thor
       prepend_file(spec_helper, read_template(:coveralls) + "\n")
       add_dev_dependency('simplecov', '0.7')
       append_file(gemfile, %{gem 'coveralls', require: false})
+    end
+
+    def insert_rspec_conf
+      append_file(spec_helper, "\n" + read_template(:rspec_configuration))
     end
 
     def spec_helper
