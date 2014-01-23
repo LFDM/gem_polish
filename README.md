@@ -4,16 +4,6 @@ Further polishes your bundler gem skeleton
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'gem_polish'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
     $ gem install gem_polish
 
 ## Usage
