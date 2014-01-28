@@ -40,7 +40,7 @@ module GemPolish
     end
 
     desc 'version', 'Reads and writes the version file of your gem'
-    method_option :read, aliases: '-r',
+    method_option :read, type: :boolean, aliases: '-r',
       desc: 'Print current version number'
     method_option :bump, aliases: '-b', lazy_default: 'revision',
       desc: 'Bumps the version number (revision [default], minor or major)'
