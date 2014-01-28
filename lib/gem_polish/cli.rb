@@ -5,7 +5,7 @@ module GemPolish
   class CLI < Thor
     include Thor::Actions
 
-    desc "polish", "polishes your gem skeleton"
+    desc "polish", "Polishes your gem skeleton"
     method_option :badges, type: :array, aliases: '-b',
       desc: 'Adds badges to your README. Takes one or more of: badge_fury, gemnasium, travis, coveralls and code_climate'
     method_option :git_user, type: :string, aliases: '-g',
@@ -34,6 +34,78 @@ module GemPolish
         insert_coveralls if parse_opt(:coverage, options, default)
         insert_rspec_conf if parse_opt(:rspec_conf, options, default)
         insert_travis(travis_opts) if travis_opts
+      end
+    end
+
+    desc 'version', 'Reads and writes the version file of your gem'
+    method_option :read, aliases: '-r',
+      desc: 'Print current version number'
+    method_option :bump, aliases: '-b', lazy_default: 'revision',
+      desc: 'Bumps the version number (revision [default], minor or major)'
+    method_option :version, aliases: '-v',
+      desc: 'Specify the new version number directly'
+    def version(name = '.')
+      inside name do
+        v = version_number
+
+        if specified_version = options[:version]
+          substitute_version(specified_version)
+          exit
+        end
+
+        if options[:read]
+          puts to_version(v)
+          exit
+        end
+
+        updated = update_version(v, options[:bump])
+        substitute_version(to_version(updated))
+        say_status(:bumped_version, "#{to_version(v)} => #{to_version(updated)}")
+      end
+    end
+
+    no_commands do
+      def version_number
+        File.read(version_file).match(version_regexp)
+        numbers = $1.split('.').map(&:to_i)
+        Hash[%w{ major minor revision}.zip(numbers)]
+      end
+
+      def update_version(version_number, bumper)
+        set_back = false
+        version_number.each_with_object({}) do |(level, number), h|
+          if set_back
+            h[level] = 0
+          else
+            if level == bumper
+              set_back = true
+              new_number = number + 1
+              h[level] = new_number
+            else
+              h[level] = number
+            end
+          end
+        end
+      end
+
+      def version_regexp
+        /VERSION = "(.*?)"/
+      end
+
+      def substitute_version(version)
+        gsub_file(version_file, version_regexp, version_insertion(version))
+      end
+
+      def version_insertion(version)
+        %{VERSION = "#{version}"}
+      end
+
+      def to_version(hsh)
+        hsh.values.join('.')
+      end
+
+      def version_file
+        "lib/#{gem_name}/version.rb"
       end
     end
 
