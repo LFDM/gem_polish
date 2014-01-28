@@ -8,9 +8,10 @@ Further polishes your Bundler gem skeleton.
 
 ## Usage
 
-Provides two executables to improve your Bundler gem skeleton.
+Provides the executable gem_polish to improve your Bundler gem skeleton.
+It contains the following subcommands:
 
-- polish_gem
+- polish
 
 Is meant to be used inside the directory a newly created gem (`bundle gem GEM_NAME`)
 Available options:
@@ -32,17 +33,17 @@ for gem polishing. Check the `examples` folder for its formatting.
 Here's an example of the syntax:
 ```
 # inside a new gem called test
-polish_gem -nc -d 'a test gem' -t 1.9.3 jruby-1.7.8 -b travis coveralls
+gem_polish polish -nc -d 'a test gem' -t 1.9.3 jruby-1.7.8 -b travis coveralls
 ```
 This would polish the test gem with coveralls support,
 circumventing the `.gem_polish.yml` file, adding a description,
 using two ruby versions for travis and adding two badges to the
 README file. 
 
+For ease of use you can issue 'polish gem' instead of 'gem_polish
+polish' directly on the command line.
 
-* create_gem
-
-Combines gem creation and polishing:
+The additional executable `create_gem' Combines gem creation and polishing:
 ``` 
 create_gem my_new_gem
 ```
@@ -52,6 +53,10 @@ create_gem my_new_gem -d 'Does nothing so far'
 ```
 At the moment he `bundle gem` command is invoked with `-t rspec` to
 provide the `rspec` test framework by default.
+
+- version
+Provides a version reader and a version bumper. Type `gem_polish version` to learn about its usage.
+
 
 ## Contributing
 
