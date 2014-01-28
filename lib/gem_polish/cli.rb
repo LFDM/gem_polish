@@ -48,6 +48,7 @@ module GemPolish
       desc: 'Specify the new version number directly'
     def version(name = '.')
       inside name do
+        return help(:version) if options.empty?
         v = Versioner.new(self)
 
         if specified_version = options[:version]
@@ -57,8 +58,6 @@ module GemPolish
         elsif bump = options[:bump]
           updated = v.update_version(bump)
           v.substitute_version(updated)
-        else
-          help(:version)
         end
       end
     end
