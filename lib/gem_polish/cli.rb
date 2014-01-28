@@ -5,14 +5,21 @@ module GemPolish
   class CLI < Thor
     include Thor::Actions
 
-    desc "polish", "polishes your gem"
-    method_option :badges, type: :array, aliases: '-b'
-    method_option :git_user, type: :string, aliases: '-g'
-    method_option :description, aliases: '-d'
-    method_option :coverage, aliases: '-c'
-    method_option :rspec_conf, aliases: '-r'
-    method_option :travis, type: :array, aliases: '-t'
-    method_option :no_default, aliases: '-n'
+    desc "polish", "polishes your gem skeleton"
+    method_option :badges, type: :array, aliases: '-b',
+      desc: 'Adds badges to your README. Takes one or more of: badge_fury, gemnasium, travis, coveralls and code_climate'
+    method_option :git_user, type: :string, aliases: '-g',
+      desc: 'Git user to be used for badge links. Defaults to your .gitconfig information'
+    method_option :description, aliases: '-d',
+      desc: 'Adds a descriptopn to the gemspec and the README'
+    method_option :coverage, aliases: '-c',
+      desc: 'Adds coveralls coverage'
+    method_option :rspec_conf, aliases: '-r',
+      desc: 'Adds additional rspec configuration'
+    method_option :travis, type: :array, aliases: '-t',
+      desc: 'Adds ruby versions to travis'
+    method_option :no_default, aliases: '-n',
+      desc: 'Bypasses ~/.gem_polish.yml. Defaults to false'
     def polish(name = '.')
       inside name do
         default = options.has_key?('no_default') ? {} : def_conf
