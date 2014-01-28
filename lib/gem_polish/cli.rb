@@ -3,6 +3,8 @@ require 'yaml'
 
 module GemPolish
   class CLI < Thor
+
+    require 'gem_polish/cli/versioner'
     include Thor::Actions
 
     desc "polish", "Polishes your gem skeleton"
@@ -46,66 +48,20 @@ module GemPolish
       desc: 'Specify the new version number directly'
     def version(name = '.')
       inside name do
-        v = version_number
+        v = Versioner.new(self)
 
         if specified_version = options[:version]
-          substitute_version(specified_version)
+          v.substitute_version(specified_version)
           exit
         end
 
         if options[:read]
-          puts to_version(v)
+          puts v.to_version
           exit
         end
 
-        updated = update_version(v, options[:bump])
-        substitute_version(to_version(updated))
-        say_status(:bumped_version, "#{to_version(v)} => #{to_version(updated)}")
-      end
-    end
-
-    no_commands do
-      def version_number
-        File.read(version_file).match(version_regexp)
-        numbers = $1.split('.').map(&:to_i)
-        Hash[%w{ major minor revision}.zip(numbers)]
-      end
-
-      def update_version(version_number, bumper)
-        set_back = false
-        version_number.each_with_object({}) do |(level, number), h|
-          if set_back
-            h[level] = 0
-          else
-            if level == bumper
-              set_back = true
-              new_number = number + 1
-              h[level] = new_number
-            else
-              h[level] = number
-            end
-          end
-        end
-      end
-
-      def version_regexp
-        /VERSION = "(.*?)"/
-      end
-
-      def substitute_version(version)
-        gsub_file(version_file, version_regexp, version_insertion(version))
-      end
-
-      def version_insertion(version)
-        %{VERSION = "#{version}"}
-      end
-
-      def to_version(hsh)
-        hsh.values.join('.')
-      end
-
-      def version_file
-        "lib/#{gem_name}/version.rb"
+        updated = v.update_version(options[:bump])
+        v.substitute_version(updated)
       end
     end
 
