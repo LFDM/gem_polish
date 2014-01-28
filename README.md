@@ -1,6 +1,7 @@
 # GemPolish
 
-Further polishes your Bundler gem skeleton.
+Command line tool to help with gem creation and maintenance. Is meant to be used in
+addition to `bundler`'s `gem` command.
 
 ## Installation
 
@@ -8,8 +9,7 @@ Further polishes your Bundler gem skeleton.
 
 ## Usage
 
-Provides the executable gem_polish to improve your Bundler gem skeleton.
-It contains the following subcommands:
+Provides the executable `gem_polish`, which boasts the following subcommands:
 
 - __polish__
 
