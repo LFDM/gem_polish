@@ -11,7 +11,7 @@ Further polishes your Bundler gem skeleton.
 Provides the executable gem_polish to improve your Bundler gem skeleton.
 It contains the following subcommands:
 
-- polish
+- __polish__
 
 Is meant to be used inside the directory a newly created gem (`bundle gem GEM_NAME`)
 Available options:
@@ -40,22 +40,26 @@ circumventing the `.gem_polish.yml` file, adding a description,
 using two ruby versions for travis and adding two badges to the
 README file. 
 
-For ease of use you can issue 'polish gem' instead of 'gem_polish
-polish' directly on the command line.
+For ease of use you can issue `polish_gem` instead of `gem_polish
+polish` directly on the command line.
 
-The additional executable `create_gem' Combines gem creation and polishing:
+The additional executable `create_gem` combines gem creation and polishing:
 ``` 
 create_gem my_new_gem
 ```
-This will create the new gem `my_new_gem`. Arguments of `polish_gem` can be passed to override defaults or provide a description.
+This will create the new gem `my_new_gem`. Arguments of `polish_gem` can
+be passed to override defaults or to provide a description.
 ```
 create_gem my_new_gem -d 'Does nothing so far'
 ```
 At the moment he `bundle gem` command is invoked with `-t rspec` to
 provide the `rspec` test framework by default.
 
-- version
-Provides a version reader and a version bumper. Type `gem_polish version` to learn about its usage.
+- __version__
+
+Provides a version reader and a version bumper. Call `gem_polish
+version` to learn about its usage. Also includes support to commit your
+version bump directly through `git`.
 
 
 ## Contributing
