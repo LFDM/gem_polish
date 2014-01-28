@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = GemPolish::VERSION
   spec.authors       = ["LFDM"]
   spec.email         = ["1986gh@gmail.com"]
-  spec.summary       = %q{Further polishes your bundler gem skeleton}
-  spec.description   = %q{Adds code coverage tools, badges in README, more ruby versions in travis etc.}
+  spec.summary       = %q{Command line tool to help with gem creation and maintenance}
+  spec.description   = %q{Adds code coverage tools, badges in README, help with travis, gem versioning etc.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
