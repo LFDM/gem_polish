@@ -39,7 +39,7 @@ module GemPolish
       end
     end
 
-    desc 'version', 'Reads and writes the version file of your gem'
+    desc 'version OPTION', 'Reads and writes the version file of your gem'
     method_option :read, type: :boolean, aliases: '-r',
       desc: 'Print current version number'
     method_option :bump, aliases: '-b', lazy_default: 'revision',
@@ -52,16 +52,14 @@ module GemPolish
 
         if specified_version = options[:version]
           v.substitute_version(specified_version)
-          exit
-        end
-
-        if options[:read]
+        elsif options[:read]
           puts v.to_version
-          exit
+        elsif bump = options[:bump]
+          updated = v.update_version(bump)
+          v.substitute_version(updated)
+        else
+          help(:version)
         end
-
-        updated = v.update_version(options[:bump])
-        v.substitute_version(updated)
       end
     end
 
