@@ -71,4 +71,11 @@ describe GemPolish::CLI::Versioner do
       end
     end
   end
+
+  describe "#commit_version_bump" do
+    it "raises an error when staged files are present" do
+      versioner.stub(:staged_files_present?) { true }
+      expect { versioner.commit_version_bump('') }.to raise_error StandardError, /aborted/
+    end
+  end
 end

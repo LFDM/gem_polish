@@ -37,6 +37,18 @@ module GemPolish
         h[level] = nl
       end
     end
+
+    def commit_version_bump(message)
+      if staged_files_present?
+        raise StandardError.new, "Commit aborted: Staged files present"
+      else
+        `git add #{file}`
+        `git commit -m "#{message}"`
+        sha = `git rev-parse --short HEAD`.chomp
+        @thor.say_status(:commited, %{#{sha} "#{message}"})
+      end
+    end
+
     private
 
     def gem_name
@@ -57,6 +69,10 @@ module GemPolish
 
     def insertion(version)
       %{VERSION = "#{version}"}
+    end
+
+    def staged_files_present?
+      system('git status --porcelain | grep -o "^\w" >/dev/null')
     end
   end
 end

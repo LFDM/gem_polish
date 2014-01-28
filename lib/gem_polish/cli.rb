@@ -46,6 +46,8 @@ module GemPolish
       desc: 'Bumps the version number (revision [default], minor or major)'
     method_option :version, aliases: '-v',
       desc: 'Specify the new version number directly'
+    method_option :commit, aliases: '-c', lazy_default: 'Bump version',
+      desc: 'Creates a git commit of a bump, takes a message, defaults to "Bump version"'
     def version(name = '.')
       inside name do
         return help(:version) if options.empty?
@@ -58,6 +60,9 @@ module GemPolish
         elsif bump = options[:bump]
           updated = v.update_version(bump)
           v.substitute_version(updated)
+          if message = options[:commit]
+            v.commit_version_bump(message)
+          end
         end
       end
     end
