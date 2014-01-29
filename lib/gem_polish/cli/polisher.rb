@@ -19,6 +19,17 @@ module GemPolish
       @thor.gsub_file(readme, /TODO:.*gem description/, description)
     end
 
+    def insert_badges
+      return unless badges
+
+      @thor.insert_into_file(readme, after: /^#\s.*\n/, force: false) { badge_string }
+    end
+
+    def git_user
+      user = @options[:git_user] || read_from_git_config
+      user.empty? ? "TODO: Write your name" : user
+    end
+
     private
 
     BADGE_NAMES = {
@@ -30,7 +41,24 @@ module GemPolish
     }
 
     def description
-      @options[:description]
+      @description ||= @options[:description]
+    end
+
+    def badges
+      @badges ||= parse_opt(:badges)
+    end
+
+    def badges_string
+      "\n#{badges.map { |badge| badge_link(badge, git_user, gem_name) }.join("\n")}\n"
+    end
+
+    def read_from_git_config
+      # can it return nil?
+      `git config user.name`.to_s.chomp
+    end
+
+    def parse_opt(opt)
+      @options[opt] || @defaults[opt]
     end
 
     def read_from_conf_file
