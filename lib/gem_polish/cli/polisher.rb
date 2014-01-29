@@ -13,16 +13,37 @@ module GemPolish
     end
 
     def insert_description
-      return unless description
-
-      @thor.gsub_file(gemspec, /TODO:.*summary.*(?=})/, description)
-      @thor.gsub_file(readme, /TODO:.*gem description/, description)
+      if description
+        @thor.gsub_file(gemspec, /TODO:.*summary.*(?=})/, description)
+        @thor.gsub_file(readme, /TODO:.*gem description/, description)
+      end
     end
 
     def insert_badges
-      return unless badges
+      if badges
+        @thor.insert_into_file(readme, after: /^#\s.*\n/, force: false) { badge_links }
+      end
+    end
 
-      @thor.insert_into_file(readme, after: /^#\s.*\n/, force: false) { badge_string }
+    def insert_coveralls
+      if parse_opt(:coveralls)
+        @thor.prepend_file(spec_helper, template(:coveralls) + "\n")
+        add_dev_dependency('simplecov', '0.7')
+        @thor.append_file(gemfile, %{gem 'coveralls', require: false})
+      end
+    end
+
+    def insert_rspec_conf
+      if parse_opt(:rspec_conf)
+        @thor.append_file(spec_helper, "\n" + template(:rspec_configuration))
+      end
+    end
+
+    def insert_travis
+      if t = parse_opt(:travis)
+        @thor.say_status :rewrite, relative_destination(travis)
+        File.write(travis, YAML.dump(travis_content(t)))
+      end
     end
 
     def git_user
@@ -32,6 +53,10 @@ module GemPolish
 
     private
 
+    def description
+      @description ||= @options[:description]
+    end
+
     BADGE_NAMES = {
       'badge_fury' => 'Version',
       'gemnasium' => 'Dependencies',
@@ -40,16 +65,17 @@ module GemPolish
       'code_climate' => 'Code Climate'
     }
 
-    def description
-      @description ||= @options[:description]
-    end
-
     def badges
       @badges ||= parse_opt(:badges)
     end
 
-    def badges_string
-      "\n#{badges.map { |badge| badge_link(badge, git_user, gem_name) }.join("\n")}\n"
+    def badge_links
+      "\n#{badges.map { |badge| badge_link(badge) }.join("\n")}\n"
+    end
+
+    def badge_link(badge)
+      path = "http://allthebadges.io/#{git_user}/#{gem_name}/#{badge}"
+      "[![#{BADGE_NAMES[badge]}](#{path}.png)](#{path})"
     end
 
     def read_from_git_config
@@ -77,6 +103,36 @@ module GemPolish
       YAML.load(File.read(conf_file)).each_with_object({}) do |(k, v), h|
         h[k.to_sym] = v
       end
+    end
+
+    def add_dev_dependency(gem, version = nil)
+      total_size = File.size(gemspec)
+      pos_before_end = total_size - 4
+      insertion = %{  spec.add_development_dependency "#{gem}"}
+      return if File.read(gemspec).match(/#{insertion}/)
+      insertion << %{, "~> #{version}"} if version
+
+      @thor.say_status :append, relative_destination(gemspec)
+      File.open(gemspec, 'r+') do |file|
+        file.seek(pos_before_end, IO::SEEK_SET)
+        file.puts(insertion)
+        file.puts('end')
+      end
+    end
+
+    def travis_content(opts)
+      c = { 'language' => 'ruby'}
+      c.merge((opts.is_a?(Hash) ? opts : { 'rvm' => opts }))
+    end
+
+    def relative_destination(dest)
+      d = File.expand_path(dest, @thor.destination_root)
+      @thor.relative_to_original_destination_root(d)
+    end
+
+    TEMPLATE_DIR = File.expand_path('../../../templates', __FILE__)
+    def template(name)
+      File.read("#{TEMPLATE_DIR}/#{name}.template")
     end
 
     def conf_file

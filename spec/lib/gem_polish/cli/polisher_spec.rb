@@ -2,7 +2,10 @@ require 'spec_helper'
 
 describe GemPolish::CLI::Polisher do
   let(:thor) do
-    double(gsub_file: true, insert_into_file: true)
+    double(
+      gsub_file: true, insert_into_file: true, say_status: true,
+      append_file: true, prepend_file: true
+    )
   end
 
   class GemPolish::CLI::Polisher
