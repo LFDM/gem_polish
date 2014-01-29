@@ -21,7 +21,7 @@ module GemPolish
       desc: 'Adds additional rspec configuration'
     method_option :travis, type: :array, aliases: '-t',
       desc: 'Adds ruby versions to travis'
-    method_option :no_default, aliases: '-n',
+    method_option :no_default, type: :boolean, aliases: '-n',
       desc: 'Bypasses ~/.gem_polish.yml. Defaults to false'
     def polish(name = '.')
       inside name do
