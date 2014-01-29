@@ -42,7 +42,7 @@ describe GemPolish::CLI::Versioner do
       versioner.instance_variable_set(:@version, versioner.extract_from_version_file)
     end
 
-    describe "#returns an updated version hash for the given bumper" do
+    describe "returns an updated version hash for the given bumper" do
       it "bumps revision" do
         res = {
           'major' => 2,
