@@ -60,7 +60,7 @@ module GemPolish
     end
 
     def file
-      "lib/#{gem_name}/version.rb"
+      "lib/#{gem_name.sub('-', '/')}/version.rb"
     end
 
     def regexp
