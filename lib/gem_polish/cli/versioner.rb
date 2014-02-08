@@ -51,6 +51,7 @@ module GemPolish
 
     def release
       `rake release`
+      @thor.say_status(:released, '')
     end
 
     private
