@@ -49,6 +49,10 @@ module GemPolish
       end
     end
 
+    def release
+      `rake release`
+    end
+
     private
 
     def gem_name

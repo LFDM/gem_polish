@@ -43,6 +43,8 @@ module GemPolish
       desc: 'Specify the new version number directly'
     method_option :commit, aliases: '-c', lazy_default: 'Bump version',
       desc: 'Creates a git commit of a bump, takes a message, defaults to "Bump version"'
+    method_option :release, type: :boolean, aliases: '-R',
+      desc: 'Releases a gem trough rake install. Can only be used in combination with -c'
     def version(name = '.')
       inside name do
         return help(:version) if options.empty?
@@ -57,6 +59,7 @@ module GemPolish
           v.substitute_version(updated)
           if message = options[:commit]
             v.commit_version_bump(message)
+            v.release if options[:release]
           end
         end
       end
