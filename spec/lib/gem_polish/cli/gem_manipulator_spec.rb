@@ -28,7 +28,7 @@ describe GemPolish::CLI::GemManipulator do
   end
 
   describe "#add" do
-    context "with a single gem requested" do
+    context "with a single gem" do
       it "adds a gem to the Gemfile" do
         gem_manipulator.add('gp')
         read_testfile('Gemfile').should =~ /gem 'gp'/
@@ -69,6 +69,13 @@ describe GemPolish::CLI::GemManipulator do
           gem_manipulator.add('gp', platform: 'jruby', version: '1.0')
           gemfile.should =~ /gem 'gp', '~> 1\.0', platform: :jruby/
         end
+      end
+    end
+
+    context "with multiple gems" do
+      it "adds multiple gems at once" do
+        gem_manipulator.add(['gp', 'pg'])
+        gemfile.should =~ /gem 'gp'\ngem 'pg'/
       end
     end
   end

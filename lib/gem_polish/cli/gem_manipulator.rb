@@ -7,11 +7,24 @@ module GemPolish
     def add(gems, options = {})
       gems = Array(gems)
       if gems.one?
-        @thor.append_to_file(gemfile, new_gem(gems.first, options))
+        append(new_gem(gems.first, options))
+      else
+        create_with_blocks(gems, options)
       end
     end
 
     private
+
+    def append(string)
+      @thor.append_to_file(gemfile, "\n#{string}")
+    end
+
+    def create_with_blocks(gems, options)
+      str = gems.map do |gem|
+        new_gem(gem, options)
+      end.join("\n")
+      append(str)
+    end
 
     def new_gem(gem, options)
       attributes = %i{ version require platform group path github }.map do |e|
