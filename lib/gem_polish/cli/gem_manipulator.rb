@@ -20,9 +20,26 @@ module GemPolish
     end
 
     def create_with_blocks(gems, options)
-      str = gems.map do |gem|
-        new_gem(gem, options)
+      indent = 0
+      str = ''
+
+      %i{ group platform }.each do |block|
+        if var = options.delete(block)
+          method = send(block, var).sub(':', '')
+          str << "#{to_ws(indent)}#{method} do\n"
+          indent += 2
+        end
+      end
+
+      str << gems.map do |gem|
+        "#{to_ws(indent)}#{new_gem(gem, options)}"
       end.join("\n")
+
+      (indent / 2).times do
+        indent -= 2
+        str << "\n#{to_ws(indent)}end"
+      end
+
       append(str)
     end
 
@@ -61,6 +78,10 @@ module GemPolish
 
     def gemfile
       "Gemfile"
+    end
+
+    def to_ws(count)
+      ' ' * count
     end
   end
 end

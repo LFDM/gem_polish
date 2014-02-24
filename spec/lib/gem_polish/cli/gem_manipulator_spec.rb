@@ -74,8 +74,20 @@ describe GemPolish::CLI::GemManipulator do
 
     context "with multiple gems" do
       it "adds multiple gems at once" do
-        gem_manipulator.add(['gp', 'pg'])
+        gem_manipulator.add(%w{ gp pg })
         gemfile.should =~ /gem 'gp'\ngem 'pg'/
+      end
+
+      context "with options" do
+        it "places gems in ruby blocks" do
+          gem_manipulator.add(%w{ gp pg }, platform: 'jruby')
+          gemfile.should =~ /platform :jruby do\n  gem 'gp'\n  gem 'pg'\nend/
+        end
+
+        it "takes multiple blocks as well (group and platform)" do
+          gem_manipulator.add(%w{ gp pg }, group: 'test', platform: 'jruby')
+          gemfile.should =~ /group :test do\n  platform :jruby do\n    gem 'gp'\n    gem 'pg'\n  end\nend/
+        end
       end
     end
   end
