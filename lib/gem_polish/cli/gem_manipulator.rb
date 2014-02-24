@@ -14,7 +14,7 @@ module GemPolish
     private
 
     def new_gem(gem, options)
-      attributes = %i{ version path }.map do |e|
+      attributes = %i{ version require platform group path github }.map do |e|
         if attr = options[e]
           send(e, attr)
         end
@@ -28,6 +28,22 @@ module GemPolish
 
     def path(var)
       "path: '#{var}'"
+    end
+
+    def github(var)
+      "git: 'git@github.com:#{var}.git'"
+    end
+
+    def require(var)
+      "require: '#{var}'"
+    end
+
+    def platform(var)
+      "platform: :#{var}"
+    end
+
+    def group(var)
+      "group: :#{var}"
     end
 
     def gemfile

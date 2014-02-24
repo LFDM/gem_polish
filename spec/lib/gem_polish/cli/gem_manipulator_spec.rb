@@ -44,6 +44,26 @@ describe GemPolish::CLI::GemManipulator do
           gem_manipulator.add('gp', path: '/home/code/gp')
           gemfile.should =~ /gem 'gp', path: '\/home\/code\/gp'/
         end
+
+        it "can specify a git path - only the repository needs to be given" do
+          gem_manipulator.add('gp', github: 'LFDM/gp')
+          gemfile.should =~ /gem 'gp', git: 'git@github\.com:LFDM\/gp\.git'/
+        end
+
+        it "can specify the name to require" do
+          gem_manipulator.add('gp', require: 'pg')
+          gemfile.should =~ /gem 'gp', require: 'pg'/
+        end
+
+        it "can specify a plaform" do
+          gem_manipulator.add('gp', platform: 'jruby')
+          gemfile.should =~ /gem 'gp', platform: :jruby/
+        end
+
+        it "can specify a group" do
+          gem_manipulator.add('gp', group: 'assets')
+          gemfile.should =~ /gem 'gp', group: :assets/
+        end
       end
     end
   end
