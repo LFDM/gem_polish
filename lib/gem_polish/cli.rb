@@ -5,9 +5,12 @@ module GemPolish
   class CLI < Thor
 
     require 'gem_polish/cli/aliases'
+    require 'gem_polish/gem'
     require 'gem_polish/cli/polisher'
     require 'gem_polish/cli/versioner'
     include Thor::Actions
+
+    register(Gem, 'gem', 'gem <action>', 'Manipulates your Gemfile. Call "gem_polish gem" to learn about your options')
 
     desc "polish", "Polishes your gem skeleton"
     method_option :badges, type: :array, aliases: '-b',
