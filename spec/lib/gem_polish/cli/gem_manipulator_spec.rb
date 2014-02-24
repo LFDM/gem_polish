@@ -64,6 +64,11 @@ describe GemPolish::CLI::GemManipulator do
           gem_manipulator.add('gp', group: 'assets')
           gemfile.should =~ /gem 'gp', group: :assets/
         end
+
+        it "takes multiple options" do
+          gem_manipulator.add('gp', platform: 'jruby', version: '1.0')
+          gemfile.should =~ /gem 'gp', '~> 1\.0', platform: :jruby/
+        end
       end
     end
   end
