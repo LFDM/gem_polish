@@ -4,6 +4,7 @@ require 'yaml'
 module GemPolish
   class CLI < Thor
 
+    require 'gem_polish/cli/aliases'
     require 'gem_polish/cli/polisher'
     require 'gem_polish/cli/versioner'
     include Thor::Actions
@@ -63,6 +64,13 @@ module GemPolish
           end
         end
       end
+    end
+
+    desc 'aliases', 'Creates aliases for gem_polish'
+    method_option :prefix, aliases: '-p',
+      desc: 'Prefix to use for the aliases, e.g. gem_polish version becomes GPv when the prefix GP is requested. Defaults to gp'
+    def aliases(destination)
+      Aliases.new(self).create(options.merge(destination: destination))
     end
   end
 end
